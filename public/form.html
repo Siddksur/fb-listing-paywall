@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Your Listing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        .success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        #n8n-form {
+            margin: 20px 0;
+        }
+        iframe {
+            border: none;
+            border-radius: 10px;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Payment Successful!</h1>
+        <p>Now enter your city to generate your listing:</p>
+        
+        <div id="loading" class="loading">
+            <p>⏳ Verifying your payment...</p>
+        </div>
+        
+        <div id="error" class="error">
+            <p>❌ Payment verification failed. Please try again or contact support.</p>
+        </div>
+        
+        <div id="n8n-form" style="display: none;">
+            <!-- We'll update this with your actual n8n form URL later -->
+            <iframe 
+                id="n8n-iframe"
+                src="" 
+                width="100%" 
+                height="400px">
+            </iframe>
+            
+            <div class="success">
+                <p>🚀 Form loaded! Enter your city above and submit to generate your listing.</p>
+                <p>You'll receive the complete listing with images via email within 2-3 minutes.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the session ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        if (sessionId) {
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            
+            // Verify payment with our backend
+            fetch(`/verify-payment/${sessionId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (data.valid) {
+                        // Payment verified - show the form with session ID
+                        const iframe = document.getElementById('n8n-iframe');
+                        iframe.src = `YOUR_N8N_FORM_URL_HERE?session_id=${sessionId}`;
+                        document.getElementById('n8n-form').style.display = 'block';
+                    } else {
+                        // Payment not verified - show error
+                        document.getElementById('error').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').style.display = 'block';
+                });
+        } else {
+            // No session ID - show error
+            document.getElementById('error').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
