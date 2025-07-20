@@ -96,11 +96,9 @@
                     document.getElementById('loading').style.display = 'none';
                     
                     if (data.valid) {
-                        // Payment verified - show the form with session ID
-                        const iframe = document.getElementById('n8n-iframe');
-                        iframe.src = `https://siddharthsur.app.n8n.cloud/form/3522fa0c-3f7f-40d2-b0aa-d2302f8c6078?session_id=${sessionId}`;
-                        document.getElementById('n8n-form').style.display = 'block';
-                    } else {
+    // Payment verified - redirect to n8n form
+    window.location.href = `https://siddharthsur.app.n8n.cloud/form/3522fa0c-3f7f-40d2-b0aa-d2302f8c6078?session_id=${sessionId}`;
+} else {
                         // Payment not verified - show error
                         document.getElementById('error').style.display = 'block';
                     }
