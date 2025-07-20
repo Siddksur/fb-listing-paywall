@@ -12,6 +12,18 @@ const validSessions = new Set();
 // Middleware
 app.use(express.static('public')); // Serve static files
 
+// Add CORS headers to allow requests from GHL domain
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
 // Webhook endpoint - MUST be before other body parsing middleware
 app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), (req, res) => {
     const sig = req.headers['stripe-signature'];
