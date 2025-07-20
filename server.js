@@ -9,8 +9,6 @@ const PORT = process.env.PORT || 3000;
 // Store valid payment sessions (in production, use a database)
 const validSessions = new Set();
 
-// Middleware
-app.use(express.static('public')); // Serve static files
 
 // Add CORS headers to allow requests from GHL domain
 app.use((req, res, next) => {
@@ -76,6 +74,9 @@ app.get('/', (req, res) => {
 app.get('/form', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'form.html'));
 });
+
+// Middleware
+app.use(express.static('public')); // Serve static files
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
