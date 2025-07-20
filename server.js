@@ -11,7 +11,6 @@ const validSessions = new Set();
 
 // Middleware
 app.use(express.static('public')); // Serve static files
-app.use(bodyParser.json());
 
 // Webhook endpoint - MUST be before other body parsing middleware
 app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), (req, res) => {
@@ -42,6 +41,8 @@ app.post('/stripe-webhook', bodyParser.raw({type: 'application/json'}), (req, re
     
     res.json({received: true});
 });
+
+app.use(bodyParser.json());
 
 // API endpoint to verify payment
 app.get('/verify-payment/:sessionId', (req, res) => {
